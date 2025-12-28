@@ -25,7 +25,7 @@ function AdminPage() {
     e.preventDefault();
 
     const newRecipe: Recipe = {
-      id: Date.now().toString(), // Simple ID generation
+      id: '00000000-0000-0000-0000-000000000000', // Empty GUID for backend to generate new ID
       ...formData,
       ingredients: ingredients.split('\n').filter(line => line.trim() !== '').map((line) => ({
         item: line.trim(),
