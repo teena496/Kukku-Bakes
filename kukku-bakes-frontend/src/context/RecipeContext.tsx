@@ -1,32 +1,70 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { recipes as initialRecipes } from '../data/recipes';
 import type { Recipe } from '../data/recipes';
 
 interface RecipeContextType {
   recipes: Recipe[];
   addRecipe: (recipe: Recipe) => void;
+  loading: boolean;
+  error: string | null;
 }
 
 const RecipeContext = createContext<RecipeContextType | undefined>(undefined);
 
 export function RecipeProvider({ children }: { children: ReactNode }) {
-  // Initialize from localStorage if available, otherwise use default data
-  const [recipes, setRecipes] = useState<Recipe[]>(() => {
-    const savedRecipes = localStorage.getItem('kukku-recipes');
-    return savedRecipes ? JSON.parse(savedRecipes) : initialRecipes;
-  });
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const API_URL = 'http://localhost:5137/api/Recipes';
 
   useEffect(() => {
-    localStorage.setItem('kukku-recipes', JSON.stringify(recipes));
-  }, [recipes]);
+    fetchRecipes();
+  }, []);
 
-  const addRecipe = (recipe: Recipe) => {
-    setRecipes((prev) => [...prev, recipe]);
+  const fetchRecipes = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(API_URL);
+      if (!response.ok) {
+        throw new Error('Failed to fetch recipes');
+      }
+      const data = await response.json();
+      setRecipes(data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching recipes:', err);
+      // Fallback to empty or keep loading false
+      setError('Failed to load recipes. Please check backend connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addRecipe = async (recipe: Recipe) => {
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipe),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add recipe');
+      }
+
+      const newRecipe = await response.json();
+      setRecipes((prev) => [...prev, newRecipe]);
+    } catch (err) {
+      console.error('Error adding recipe:', err);
+      alert('Failed to add recipe. See console for details.');
+    }
   };
 
   return (
-    <RecipeContext.Provider value={{ recipes, addRecipe }}>
+    <RecipeContext.Provider value={{ recipes, addRecipe, loading, error }}>
       {children}
     </RecipeContext.Provider>
   );
