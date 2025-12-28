@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom'
-import { recipes } from '../data/recipes'
+import { useRecipes } from '../context/RecipeContext'
 import type { RecipeCategory, Recipe } from '../data/recipes'
 import '../App.css'
 
 function RecipesPage() {
   const navigate = useNavigate()
+  const { recipes } = useRecipes()
 
   // Group recipes by category
   const categories: RecipeCategory[] = ['Cakes', 'Cookies', 'Breads', 'Snacks'];

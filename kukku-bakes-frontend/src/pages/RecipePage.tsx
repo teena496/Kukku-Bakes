@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { recipes } from '../data/recipes'
+import { useRecipes } from '../context/RecipeContext'
 import { useEffect } from 'react'
 import '../App.css'
 
 function RecipePage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { recipes } = useRecipes()
   const recipe = recipes.find(r => r.id === id)
 
   useEffect(() => {
