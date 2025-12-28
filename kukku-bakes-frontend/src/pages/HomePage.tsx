@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { recipes } from '../data/recipes'
+import type { RecipeCategory, Recipe } from '../data/recipes'
 import '../App.css'
 
 function HomePage() {
@@ -20,6 +22,13 @@ function HomePage() {
     element?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  // Group recipes by category
+  const categories: RecipeCategory[] = ['Cakes', 'Cookies', 'Breads', 'Snacks'];
+  
+  const getRecipesByCategory = (category: RecipeCategory): Recipe[] => {
+    return recipes.filter(recipe => recipe.category === category);
+  }
+
   return (
     <div className="home-page">
       {/* Navigation */}
@@ -31,7 +40,7 @@ function HomePage() {
           </div>
           <ul className="nav-links">
             <li><a onClick={() => scrollToSection('home')}>Home</a></li>
-            <li><a onClick={() => scrollToSection('features')}>Our Specialties</a></li>
+            <li><a onClick={() => scrollToSection('recipes')}>Recipes</a></li>
             <li><a onClick={() => scrollToSection('about')}>About</a></li>
             <li><a onClick={() => scrollToSection('contact')}>Contact</a></li>
           </ul>
@@ -49,8 +58,8 @@ function HomePage() {
             every creation is made with love, premium ingredients, and a passion for perfection.
           </p>
           <div className="cta-buttons">
-            <button className="btn btn-primary" onClick={() => scrollToSection('features')}>
-              Explore Our Treats
+            <button className="btn btn-primary" onClick={() => scrollToSection('recipes')}>
+              Explore Our Recipes
             </button>
             <button className="btn btn-secondary" onClick={() => scrollToSection('contact')}>
               Order Now
@@ -59,69 +68,36 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="features section">
+      {/* Recipes Section */}
+      <section id="recipes" className="recipes section">
         <div className="container">
-          <h2 className="section-title">Our Specialties</h2>
-          <p className="section-subtitle">Handcrafted with love, baked to perfection</p>
+          <h2 className="section-title">Recipes</h2>
+          <p className="section-subtitle">Discover our favorite recipes within each category</p>
           
-          <div className="features-grid">
-            <div className="feature-card" onClick={() => navigate('/recipe/artisan-bread')} style={{cursor: 'pointer'}}>
-              <div className="feature-icon">🥖</div>
-              <h3>Artisan Breads</h3>
-              <p>
-                Freshly baked daily using traditional techniques and the finest ingredients. 
-                From sourdough to whole grain, each loaf tells a story.
-              </p>
-              <span className="view-recipe-link">View Recipe →</span>
+          {categories.map((category) => (
+            <div key={category} className="category-section">
+              <h3 className="category-title">{category}</h3>
+              <div className="features-grid">
+                {getRecipesByCategory(category).map((recipe) => (
+                  <div 
+                    key={recipe.id} 
+                    className="feature-card" 
+                    onClick={() => navigate(`/recipe/${recipe.id}`)} 
+                    style={{cursor: 'pointer'}}
+                  >
+                    <div className="card-image-wrapper">
+                         <img src={recipe.image} alt={recipe.title} className="card-image" />
+                    </div>
+                    <div className="card-content">
+                        <h3>{recipe.title}</h3>
+                        <p>{recipe.description}</p>
+                        <span className="view-recipe-link">View Recipe →</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-
-            <div className="feature-card" onClick={() => navigate('/recipe/chocolate-chip-cookies')} style={{cursor: 'pointer'}}>
-              <div className="feature-icon">🍪</div>
-              <h3>Cookies & Treats</h3>
-              <p>
-                From classic chocolate chip to innovative seasonal flavors, 
-                our cookies are the perfect blend of crispy and chewy.
-              </p>
-               <span className="view-recipe-link">View Recipe →</span>
-            </div>
-
-             <div className="feature-card" onClick={() => navigate('/recipe/blueberry-muffins')} style={{cursor: 'pointer'}}>
-              <div className="feature-icon">🧁</div>
-              <h3>Blueberry Muffins</h3>
-              <p>
-                Soft, moist, and bursting with fresh blueberries. A perfect breakfast treat or afternoon snack.
-              </p>
-               <span className="view-recipe-link">View Recipe →</span>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">🥐</div>
-              <h3>French Pastries</h3>
-              <p>
-                Buttery croissants, delicate éclairs, and elegant tarts that transport 
-                you to a Parisian patisserie with every bite.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">🎂</div>
-              <h3>Wedding Cakes</h3>
-              <p>
-                Make your special day unforgettable with stunning wedding cakes 
-                that are as beautiful as they are delicious.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <div className="feature-icon">🥧</div>
-              <h3>Seasonal Pies</h3>
-              <p>
-                Homemade pies featuring seasonal fruits and time-honored recipes 
-                that remind you of grandma's kitchen.
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
