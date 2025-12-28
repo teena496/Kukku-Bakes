@@ -1,52 +1,24 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { recipes } from '../data/recipes'
-import type { RecipeCategory, Recipe } from '../data/recipes'
+import { Link, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import '../App.css'
 
 function HomePage() {
-  const [scrolled, setScrolled] = useState(false)
-  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
+    if (location.hash) {
+      const id = location.hash.replace('#', '')
+      const element = document.getElementById(id)
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' })
+        }, 100)
+      }
     }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id)
-    element?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  // Group recipes by category
-  const categories: RecipeCategory[] = ['Cakes', 'Cookies', 'Breads', 'Snacks'];
-  
-  const getRecipesByCategory = (category: RecipeCategory): Recipe[] => {
-    return recipes.filter(recipe => recipe.category === category);
-  }
+  }, [location])
 
   return (
     <div className="home-page">
-      {/* Navigation */}
-      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
-        <div className="container nav-container">
-          <div className="logo-container">
-            <img src="/logo.png" alt="Kukku Bakes Logo" className="logo" />
-            <span className="brand-name">Kukku Bakes</span>
-          </div>
-          <ul className="nav-links">
-            <li><a onClick={() => scrollToSection('home')}>Home</a></li>
-            <li><a onClick={() => scrollToSection('recipes')}>Recipes</a></li>
-            <li><a onClick={() => scrollToSection('about')}>About</a></li>
-            <li><a onClick={() => scrollToSection('contact')}>Contact</a></li>
-          </ul>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <section id="home" className="hero">
         <div className="hero-content">
@@ -58,46 +30,48 @@ function HomePage() {
             every creation is made with love, premium ingredients, and a passion for perfection.
           </p>
           <div className="cta-buttons">
-            <button className="btn btn-primary" onClick={() => scrollToSection('recipes')}>
+            <Link to="/recipes" className="btn btn-primary">
               Explore Our Recipes
-            </button>
-            <button className="btn btn-secondary" onClick={() => scrollToSection('contact')}>
+            </Link>
+            <a href="#contact" className="btn btn-secondary">
               Order Now
-            </button>
+            </a>
           </div>
         </div>
       </section>
 
-      {/* Recipes Section */}
-      <section id="recipes" className="recipes section">
+      {/* Recipe Categories Preview */}
+      <section id="recipes-preview" className="section" style={{backgroundColor: 'var(--white)'}}>
         <div className="container">
-          <h2 className="section-title">Recipes</h2>
-          <p className="section-subtitle">Discover our favorite recipes within each category</p>
+          <h2 className="section-title">Our Specialties</h2>
+          <p className="section-subtitle">Explore our delicious categories</p>
           
-          {categories.map((category) => (
-            <div key={category} className="category-section">
-              <h3 className="category-title">{category}</h3>
-              <div className="features-grid">
-                {getRecipesByCategory(category).map((recipe) => (
-                  <div 
-                    key={recipe.id} 
-                    className="feature-card" 
-                    onClick={() => navigate(`/recipe/${recipe.id}`)} 
-                    style={{cursor: 'pointer'}}
-                  >
-                    <div className="card-image-wrapper">
-                         <img src={recipe.image} alt={recipe.title} className="card-image" />
-                    </div>
-                    <div className="card-content">
-                        <h3>{recipe.title}</h3>
-                        <p>{recipe.description}</p>
-                        <span className="view-recipe-link">View Recipe →</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+          <div className="category-preview-grid">
+            <Link to="/recipes" className="category-preview-card">
+              <div className="category-icon">🎂</div>
+              <h3>Cakes</h3>
+              <p>Decadent & Delicious</p>
+            </Link>
+            <Link to="/recipes" className="category-preview-card">
+              <div className="category-icon">🍪</div>
+              <h3>Cookies</h3>
+              <p>Crispy & Chewy</p>
+            </Link>
+            <Link to="/recipes" className="category-preview-card">
+              <div className="category-icon">🥖</div>
+              <h3>Breads</h3>
+              <p>Fresh & Artisan</p>
+            </Link>
+            <Link to="/recipes" className="category-preview-card">
+              <div className="category-icon">🧁</div>
+              <h3>Snacks</h3>
+              <p>Sweet & Savory</p>
+            </Link>
+          </div>
+
+          <div style={{textAlign: 'center', marginTop: 'var(--spacing-md)'}}>
+             <Link to="/recipes" className="btn btn-secondary">View All Recipes</Link>
+          </div>
         </div>
       </section>
 
@@ -122,9 +96,9 @@ function HomePage() {
                 Whether you're celebrating a milestone, hosting a gathering, or simply treating 
                 yourself, Kukku Bakes is here to make every moment sweeter.
               </p>
-              <button className="btn btn-primary" onClick={() => scrollToSection('contact')}>
+              <a href="#contact" className="btn btn-primary">
                 Visit Us Today
-              </button>
+              </a>
             </div>
             <div className="about-image">
               <img 
@@ -163,19 +137,6 @@ function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <p>&copy; 2024 Kukku Bakes. All rights reserved.</p>
-          <p>Made with ❤️ and lots of flour</p>
-          <div className="social-links">
-            <a href="#" className="social-link" aria-label="Facebook">📘</a>
-            <a href="#" className="social-link" aria-label="Instagram">📷</a>
-            <a href="#" className="social-link" aria-label="Twitter">🐦</a>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
