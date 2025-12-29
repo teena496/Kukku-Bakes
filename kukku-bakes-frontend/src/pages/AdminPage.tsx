@@ -18,7 +18,9 @@ function AdminPage() {
     category: 'Cakes' as RecipeCategory,
   });
 
-  const [ingredients, setIngredients] = useState<string>('');
+  const [ingredientsList, setIngredientsList] = useState<{ item: string; amount: string }[]>([
+    { item: '', amount: '' }
+  ]);
   const [steps, setSteps] = useState<string>('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -27,10 +29,8 @@ function AdminPage() {
     const newRecipe: Recipe = {
       id: '00000000-0000-0000-0000-000000000000', // Empty GUID for backend to generate new ID
       ...formData,
-      ingredients: ingredients.split('\n').filter(line => line.trim() !== '').map((line) => ({
-        item: line.trim(),
-        amount: 'N/A', // Simple default for now since input is just one line
-      })),
+      ...formData,
+      ingredients: ingredientsList.filter(i => i.item.trim() !== ''),
       steps: steps.split('\n').filter(line => line.trim() !== '').map((line, index) => ({
         stepNumber: index + 1,
         instruction: line.trim(),
@@ -48,6 +48,43 @@ function AdminPage() {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const data = new FormData();
+    data.append('file', file);
+
+    try {
+      const response = await fetch('http://localhost:5137/api/Recipes/upload-image', {
+        method: 'POST',
+        body: data,
+      });
+
+      if (!response.ok) throw new Error('Upload failed');
+
+      const result = await response.json();
+      setFormData(prev => ({ ...prev, image: result.url }));
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Make sure backend is running.');
+    }
+  };
+
+  const handleIngredientChange = (index: number, field: 'item' | 'amount', value: string) => {
+    const newIngredients = [...ingredientsList];
+    newIngredients[index][field] = value;
+    setIngredientsList(newIngredients);
+  };
+
+  const addIngredientRow = () => {
+    setIngredientsList([...ingredientsList, { item: '', amount: '' }]);
+  };
+
+  const removeIngredientRow = (index: number) => {
+    setIngredientsList(ingredientsList.filter((_, i) => i !== index));
   };
 
   return (
@@ -94,16 +131,19 @@ function AdminPage() {
         </div>
 
         <div className="form-group" style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Image URL</label>
+          <label style={{ display: 'block', marginBottom: '5px' }}>Image Upload</label>
           <input 
-            type="text" 
-            name="image" 
-            value={formData.image} 
-            onChange={handleChange} 
-            required 
-            placeholder="https://example.com/image.jpg"
+            type="file" 
+            accept="image/*"
+            onChange={handleImageUpload} 
             style={{ width: '100%', padding: '8px', borderRadius: '5px', border: '1px solid #ccc' }}
           />
+          {formData.image && (
+            <div style={{ marginTop: '10px' }}>
+              <p style={{ fontSize: '0.9em', color: '#666' }}>Image uploaded: {formData.image}</p>
+              <img src={formData.image} alt="Preview" style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '5px' }} />
+            </div>
+          )}
         </div>
 
         <div className="form-row" style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
@@ -142,15 +182,43 @@ function AdminPage() {
         </div>
 
         <div className="form-group" style={{ marginBottom: '15px' }}>
-          <label style={{ display: 'block', marginBottom: '5px' }}>Ingredients (One per line)</label>
-          <textarea 
-            value={ingredients} 
-            onChange={(e) => setIngredients(e.target.value)} 
-            rows={5}
-            required
-            placeholder="2 cups Flour&#10;1 cup Sugar"
-            style={{ width: '100%', padding: '8px', borderRadius: '5px', border: '1px solid #ccc' }}
-          />
+          <label style={{ display: 'block', marginBottom: '5px' }}>Ingredients</label>
+          {ingredientsList.map((ing, index) => (
+            <div key={index} style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+              <input
+                type="text"
+                placeholder="Item (e.g. Flour)"
+                value={ing.item}
+                onChange={(e) => handleIngredientChange(index, 'item', e.target.value)}
+                required
+                style={{ flex: 2, padding: '8px', borderRadius: '5px', border: '1px solid #ccc' }}
+              />
+              <input
+                type="text"
+                placeholder="Amount (e.g. 2 cups)"
+                value={ing.amount}
+                onChange={(e) => handleIngredientChange(index, 'amount', e.target.value)}
+                required
+                style={{ flex: 1, padding: '8px', borderRadius: '5px', border: '1px solid #ccc' }}
+              />
+              {ingredientsList.length > 1 && (
+                <button 
+                  type="button" 
+                  onClick={() => removeIngredientRow(index)}
+                  style={{ padding: '8px', background: '#ff4d4d', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+                >
+                  X
+                </button>
+              )}
+            </div>
+          ))}
+          <button 
+            type="button" 
+            onClick={addIngredientRow}
+            style={{ padding: '8px 15px', background: '#4CAF50', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+          >
+            + Add Ingredient
+          </button>
         </div>
 
         <div className="form-group" style={{ marginBottom: '15px' }}>
