@@ -4,7 +4,8 @@ import type { Recipe } from '../data/recipes';
 
 interface RecipeContextType {
   recipes: Recipe[];
-  addRecipe: (recipe: Recipe) => void;
+  addRecipe: (recipe: Recipe) => Promise<void>;
+  updateRecipe: (recipe: Recipe) => Promise<void>;
   loading: boolean;
   error: string | null;
 }
@@ -63,8 +64,29 @@ export function RecipeProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updateRecipe = async (recipe: Recipe) => {
+    try {
+      const response = await fetch(`${API_URL}/${recipe.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipe),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update recipe');
+      }
+
+      setRecipes((prev) => prev.map((r) => (r.id === recipe.id ? recipe : r)));
+    } catch (err) {
+      console.error('Error updating recipe:', err);
+      alert('Failed to update recipe. See console for details.');
+    }
+  };
+
   return (
-    <RecipeContext.Provider value={{ recipes, addRecipe, loading, error }}>
+    <RecipeContext.Provider value={{ recipes, addRecipe, updateRecipe, loading, error }}>
       {children}
     </RecipeContext.Provider>
   );

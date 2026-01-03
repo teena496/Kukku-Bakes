@@ -59,6 +59,68 @@ public class RecipesController : ControllerBase
         return CreatedAtAction("GetRecipe", new { id = recipe.Id }, recipe);
     }
 
+    // PUT: api/Recipes/5
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutRecipe(Guid id, Recipe recipe)
+    {
+        if (id != recipe.Id)
+        {
+            return BadRequest();
+        }
+
+        var existingRecipe = await _context.Recipes
+            .Include(r => r.Ingredients)
+            .Include(r => r.Steps)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (existingRecipe == null)
+        {
+            return NotFound();
+        }
+
+        // Update scalar properties
+        existingRecipe.Title = recipe.Title;
+        existingRecipe.Description = recipe.Description;
+        existingRecipe.Image = recipe.Image;
+        existingRecipe.PrepTime = recipe.PrepTime;
+        existingRecipe.CookTime = recipe.CookTime;
+        existingRecipe.Servings = recipe.Servings;
+        existingRecipe.Category = recipe.Category;
+
+        // Update Ingredients: Remove old ones and add new ones
+        // Note: In a real app, you might want to reconcile changes to preserve IDs, 
+        // but for simplicity, we replace the collection.
+        _context.RemoveRange(existingRecipe.Ingredients);
+        existingRecipe.Ingredients = recipe.Ingredients;
+
+        // Update Steps
+        _context.RemoveRange(existingRecipe.Steps);
+        existingRecipe.Steps = recipe.Steps;
+
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!RecipeExists(id))
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return NoContent();
+    }
+
+    private bool RecipeExists(Guid id)
+    {
+        return _context.Recipes.Any(e => e.Id == id);
+    }
+
     [HttpPost("upload-image")]
     public async Task<IActionResult> UploadImage(IFormFile file)
     {
