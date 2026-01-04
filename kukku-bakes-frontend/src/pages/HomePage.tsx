@@ -22,7 +22,7 @@ function HomePage() {
       {/* Hero Section */}
       <section id="home" className="hero">
         <div className="hero-content">
-          <img src="/logo.png" alt="Kukku Bakes Logo" className="hero-logo" />
+          <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Kukku Bakes Logo" className="hero-logo" />
           <h1>Kukku Bakes</h1>
           <p className="hero-subtitle">Home Sweet Bakery</p>
           <p className="hero-description">

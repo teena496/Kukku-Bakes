@@ -26,7 +26,7 @@ function MainLayout() {
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
         <div className="container nav-container">
           <Link to="/" className="logo-container">
-            <img src="/logo.png" alt="Kukku Bakes Logo" className="logo" />
+            <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Kukku Bakes Logo" className="logo" />
             <span className="brand-name">Kukku Bakes</span>
           </Link>
           <ul className="nav-links">
