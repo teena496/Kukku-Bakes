@@ -12,7 +12,7 @@ import './App.css'
 function App() {
   return (
     <RecipeProvider>
-      <Router>
+      <Router basename="/kukku-bakes-frontend">
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
