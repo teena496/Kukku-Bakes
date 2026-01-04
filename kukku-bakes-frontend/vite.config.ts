@@ -6,6 +6,7 @@ export default defineConfig({
   base: '/kukku-bakes-frontend/',
   plugins: [react()],
   build: {
-    outDir: 'docs',
+    outDir: '../docs',
+    emptyOutDir: true,
   },
 })
