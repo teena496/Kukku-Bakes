@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { recipes as originalRecipes } from '../data/recipes';
 import type { Recipe } from '../data/recipes';
+import { instagramRecipes } from '../data/instagramRecipes';
 
 interface RecipeContextType {
   recipes: Recipe[];
@@ -11,9 +13,10 @@ interface RecipeContextType {
 }
 
 const RecipeContext = createContext<RecipeContextType | undefined>(undefined);
+const localRecipes = [...instagramRecipes, ...originalRecipes];
 
 export function RecipeProvider({ children }: { children: ReactNode }) {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>(localRecipes);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,8 +38,8 @@ export function RecipeProvider({ children }: { children: ReactNode }) {
       setError(null);
     } catch (err) {
       console.error('Error fetching recipes:', err);
-      // Fallback to empty or keep loading false
-      setError('Failed to load recipes. Please check backend connection.');
+      setRecipes(localRecipes);
+      setError(null);
     } finally {
       setLoading(false);
     }
@@ -92,6 +95,8 @@ export function RecipeProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// The provider and its hook intentionally live together.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useRecipes() {
   const context = useContext(RecipeContext);
   if (context === undefined) {
