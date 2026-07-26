@@ -97,7 +97,7 @@ function MainLayout() {
 
         <div className="container footer-bottom">
           <p>&copy; {new Date().getFullYear()} Kukku Bakes. All rights reserved.</p>
-          <p>Made with <span aria-label="love">♥</span> and a lot of flour</p>
+          <p>Made with <span aria-label="love">♥</span> and lots of flour</p>
         </div>
       </footer>
     </div>
