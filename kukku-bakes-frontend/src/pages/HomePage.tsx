@@ -47,22 +47,22 @@ function HomePage() {
           <p className="section-subtitle">Explore our delicious categories</p>
           
           <div className="category-preview-grid">
-            <Link to="/recipes" className="category-preview-card">
+            <Link to="/recipes/cakes" className="category-preview-card">
               <div className="category-icon">🎂</div>
               <h3>Cakes</h3>
               <p>Decadent & Delicious</p>
             </Link>
-            <Link to="/recipes" className="category-preview-card">
+            <Link to="/recipes/cookies" className="category-preview-card">
               <div className="category-icon">🍪</div>
               <h3>Cookies</h3>
               <p>Crispy & Chewy</p>
             </Link>
-            <Link to="/recipes" className="category-preview-card">
+            <Link to="/recipes/breads" className="category-preview-card">
               <div className="category-icon">🥖</div>
               <h3>Breads</h3>
               <p>Fresh & Artisan</p>
             </Link>
-            <Link to="/recipes" className="category-preview-card">
+            <Link to="/recipes/snacks" className="category-preview-card">
               <div className="category-icon">🧁</div>
               <h3>Snacks</h3>
               <p>Sweet & Savory</p>

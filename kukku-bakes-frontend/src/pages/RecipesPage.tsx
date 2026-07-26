@@ -1,49 +1,51 @@
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useRecipes } from '../context/RecipeContext'
-import type { RecipeCategory, Recipe } from '../data/recipes'
+import type { RecipeCategory } from '../data/recipes'
 import '../App.css'
 
-function RecipesPage() {
-  const navigate = useNavigate()
-  const { recipes } = useRecipes()
+const categories: {
+  name: RecipeCategory
+  slug: string
+  icon: string
+  description: string
+}[] = [
+  { name: 'Cakes', slug: 'cakes', icon: '🎂', description: 'Celebration cakes and comforting classics' },
+  { name: 'Cookies', slug: 'cookies', icon: '🍪', description: 'Crisp, chewy, and buttery favourites' },
+  { name: 'Breads', slug: 'breads', icon: '🥖', description: 'Fresh loaves and sweet enriched breads' },
+  { name: 'Snacks', slug: 'snacks', icon: '🧁', description: 'Small bakes and anytime treats' },
+]
 
-  // Group recipes by category
-  const categories: RecipeCategory[] = ['Cakes', 'Cookies', 'Breads', 'Snacks'];
-  
-  const getRecipesByCategory = (category: RecipeCategory): Recipe[] => {
-    return recipes.filter(recipe => recipe.category === category);
-  }
+function RecipesPage() {
+  const { recipes } = useRecipes()
 
   return (
     <section className="recipes section" style={{paddingTop: '100px'}}>
         <div className="container">
-          <h2 className="section-title">Recipes</h2>
-          <p className="section-subtitle">Discover our favorite recipes within each category</p>
-          
-          {categories.map((category) => (
-            <div key={category} className="category-section">
-              <h3 className="category-title">{category}</h3>
-              <div className="features-grid">
-                {getRecipesByCategory(category).map((recipe) => (
-                  <div 
-                    key={recipe.id} 
-                    className="feature-card" 
-                    onClick={() => navigate(`/recipe/${recipe.id}`)} 
-                    style={{cursor: 'pointer'}}
-                  >
-                    <div className="card-image-wrapper">
-                         <img src={recipe.image} alt={recipe.title} className="card-image" />
-                    </div>
-                    <div className="card-content">
-                        <h3>{recipe.title}</h3>
-                        <p>{recipe.description}</p>
-                        <span className="view-recipe-link">View Recipe →</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+          <h1 className="section-title">Recipe Categories</h1>
+          <p className="section-subtitle">Choose a collection to discover your next bake</p>
+
+          <div className="category-preview-grid category-directory">
+            {categories.map((category) => {
+              const count = recipes.filter(
+                (recipe) => recipe.category === category.name,
+              ).length
+
+              return (
+                <Link
+                  key={category.slug}
+                  to={`/recipes/${category.slug}`}
+                  className="category-preview-card"
+                >
+                  <div className="category-icon">{category.icon}</div>
+                  <h2>{category.name}</h2>
+                  <p>{category.description}</p>
+                  <span className="category-recipe-count">
+                    {count} {count === 1 ? 'recipe' : 'recipes'}
+                  </span>
+                </Link>
+              )
+            })}
+          </div>
         </div>
       </section>
   )
