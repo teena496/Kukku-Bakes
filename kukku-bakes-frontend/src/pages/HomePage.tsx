@@ -26,16 +26,17 @@ function HomePage() {
           <h1>Kukku Bakes</h1>
           <p className="hero-subtitle">Home Sweet Bakery</p>
           <p className="hero-description">
-            Indulge in the warmth of freshly baked goodness. From artisan breads to decadent pastries, 
-            every creation is made with love, premium ingredients, and a passion for perfection.
+            I create beautiful celebration cakes and irresistible homemade cookies, carefully baked
+            to make every occasion a little sweeter. I also enjoy baking fresh breads for my
+            family and everyday home needs.
           </p>
           <div className="cta-buttons">
             <Link to="/recipes" className="btn btn-primary">
               Explore Our Recipes
             </Link>
-            <a href="#contact" className="btn btn-secondary">
+            <Link to="/contact" className="btn btn-secondary">
               Order Now
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -50,17 +51,17 @@ function HomePage() {
             <Link to="/recipes/cakes" className="category-preview-card">
               <div className="category-icon">🎂</div>
               <h3>Cakes</h3>
-              <p>Decadent & Delicious</p>
+              <p>Made for Every Celebration</p>
             </Link>
             <Link to="/recipes/cookies" className="category-preview-card">
               <div className="category-icon">🍪</div>
               <h3>Cookies</h3>
-              <p>Crispy & Chewy</p>
+              <p>Fresh, Buttery & Irresistible</p>
             </Link>
             <Link to="/recipes/breads" className="category-preview-card">
               <div className="category-icon">🥖</div>
               <h3>Breads</h3>
-              <p>Fresh & Artisan</p>
+              <p>Wholesome Home Baking</p>
             </Link>
             <Link to="/recipes/snacks" className="category-preview-card">
               <div className="category-icon">🧁</div>
@@ -70,7 +71,7 @@ function HomePage() {
           </div>
 
           <div style={{textAlign: 'center', marginTop: 'var(--spacing-md)'}}>
-             <Link to="/recipes" className="btn btn-secondary">View All Recipes</Link>
+             <Link to="/recipes" className="btn btn-secondary view-all-recipes-btn">View All Recipes</Link>
           </div>
         </div>
       </section>
@@ -80,25 +81,24 @@ function HomePage() {
         <div className="container">
           <div className="about-content">
             <div className="about-text">
-              <h2>Our Story</h2>
+              <h2>My Baking Story</h2>
               <p>
-                At Kukku Bakes, we believe that baking is more than just mixing ingredients—it's 
-                about creating moments of joy and bringing people together. Founded with a passion 
-                for traditional baking methods and a commitment to quality, we've been serving our 
-                community with love-filled treats.
+                At Kukku Bakes, my passion is creating cakes that make celebrations memorable and
+                cookies that bring a little joy to any day. Every bake is prepared with care,
+                attention to detail, and quality ingredients.
               </p>
               <p>
-                Every morning, our ovens come alive with the aroma of fresh bread, pastries, and 
-                cakes. We source the finest local ingredients and use time-tested recipes passed 
-                down through generations, while also embracing innovation to create new favorites.
+                From birthdays and anniversaries to simple family moments, I love turning ideas
+                into delicious cakes and sharing comforting batches of homemade cookies. Bread is
+                also part of my baking journey, made mainly for my family and our everyday needs.
               </p>
               <p>
-                Whether you're celebrating a milestone, hosting a gathering, or simply treating 
-                yourself, Kukku Bakes is here to make every moment sweeter.
+                Whether you are planning a special occasion or simply craving a sweet treat,
+                Kukku Bakes is here to help make the moment feel special.
               </p>
-              <a href="#contact" className="btn btn-primary">
+              <Link to="/contact" className="btn btn-primary visit-us-btn">
                 Visit Us Today
-              </a>
+              </Link>
             </div>
             <div className="about-image">
               <img 

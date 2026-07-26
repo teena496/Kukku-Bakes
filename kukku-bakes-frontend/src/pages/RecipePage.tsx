@@ -26,19 +26,7 @@ function RecipePage() {
 
   return (
     <div className="recipe-page">
-      <nav className="navbar" style={{backgroundColor: '#fff', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'}}>
-        <div className="container nav-container">
-          <div className="logo-container" onClick={() => navigate('/')} style={{cursor: 'pointer'}}>
-             <img src="/logo.png" alt="Kukku Bakes Logo" className="logo" />
-             <span className="brand-name">Kukku Bakes</span>
-          </div>
-          <button className="btn btn-secondary" onClick={() => navigate('/')}>
-            Back to Home
-          </button>
-        </div>
-      </nav>
-
-      <div className="container" style={{marginTop: '100px', marginBottom: '50px'}}>
+      <div className="container" style={{paddingTop: '140px', marginBottom: '50px'}}>
         <div className="recipe-header">
             <div className="recipe-image-container">
                  <img src={recipe.image} alt={recipe.title} className="recipe-hero-image" />
@@ -90,16 +78,6 @@ function RecipePage() {
         </div>
       </div>
 
-       <footer className="footer">
-        <div className="container">
-          <p>&copy; 2024 Kukku Bakes. All rights reserved.</p>
-          <div className="social-links">
-            <a href="#" className="social-link">📘</a>
-            <a href="#" className="social-link">📷</a>
-            <a href="#" className="social-link">🐦</a>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
